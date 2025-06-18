@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>SISTEMA RUGBY CON AJAX Y SPRING Boot</title>
+    // Incluye el CSS de Bootstrap
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5">
+
+
+    <script>
+        // Funciones JavaScript para manejar AJAX
+        // Cargar el mensaje desde el servidor y mostrarlo en la página
+        function cargarMensaje() {
+            fetch("/vista/json") // Llama al endpoint en Spring Boot
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("mensaje").innerText = data.mensaje;
+                    document.getElementById("estado").innerText = "Respuesta recibida!";
+                })
+                .catch(error => console.error("Error en AJAX:", error));
+        }
+
+        function enviarDatos() {
+            let nombre = document.getElementById("nombre").value;
+
+            fetch("/vista/guardar", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ nombre: nombre, puntaje: Math.floor(Math.random() * 100) })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("respuesta").innerText = "Servidor dice: " + data.estado;
+            })
+            .catch(error => console.error("Error en AJAX POST:", error));
+        }
+    </script>
+</head>
+<body>
+    <h1>AJAX con Spring Boot</h1>
+    
+    <button onclick="cargarMensaje()">Cargar mensaje</button>
+    <p id="mensaje">Aquí aparecerá el mensaje JSON...</p>
+    <p id="estado"></p>
+
+    <h2>Enviar datos</h2>
+    <input type="text" id="nombre" placeholder="Escribe tu nombre" />
+    <button onclick="enviarDatos()">Enviar</button>
+    <p id="respuesta"></p>
+</body>
+</html>

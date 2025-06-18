@@ -1,0 +1,20 @@
+<script>
+function actualizarEquipos() {
+    fetch("http://localhost:8080/equipos")
+        .then(response => response.json())
+        .then(data => {
+            let lista = document.getElementById("listaEquipos");
+            lista.innerHTML = "";
+            data.forEach(equipo => {
+                let item = document.createElement("li");
+                item.textContent = equipo.nombre;
+                lista.appendChild(item);
+            });
+        });
+}
+
+// Actualiza cada 5 segundos
+setInterval(actualizarEquipos, 5000);
+</script>
+
+<ul id="listaEquipos"></ul>
