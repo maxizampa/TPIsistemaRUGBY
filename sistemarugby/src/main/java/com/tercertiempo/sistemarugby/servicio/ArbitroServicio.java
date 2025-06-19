@@ -19,21 +19,37 @@ public class ArbitroServicio {
         return arbitroRepositorio.findAll();
     }
 
-    public Optional<Arbitro> obtenerPorId(int id) {
+    public Optional<Arbitro> obtenerPorId(Integer id) {
         return arbitroRepositorio.findById(id);
+    }
+
+    public boolean existePorId(Integer id) {
+        return arbitroRepositorio.existsById(id);
+    }
+
+    public long contarArbitros() {
+        return arbitroRepositorio.count();
     }
 
     public Arbitro guardarArbitro(Arbitro arbitro) {
         return arbitroRepositorio.save(arbitro);
     }
 
-    public void eliminarArbitro(int id) {
-        arbitroRepositorio.deleteById(id);
+    public void eliminarPorId(Integer id) {
+        if (arbitroRepositorio.existsById(id)) {
+            arbitroRepositorio.deleteById(id);
+        }
     }
 
-    
-    public Optional<Arbitro> obtenerPorNombre(String nombre) {
-        List<Arbitro> arbitros = arbitroRepositorio.buscaPorNombre(nombre);
-        return arbitros.stream().findFirst();
+    public List<Arbitro> buscarPorNombre(String nombre) {
+        return arbitroRepositorio.findByNombre(nombre);
+    }
+
+    public List<Arbitro> buscarPorApellido(String apellido) {
+        return arbitroRepositorio.findByApellido(apellido);
+    }
+
+    public List<Arbitro> buscarPorNombreYApellido(String nombre, String apellido) {
+        return arbitroRepositorio.buscarPorNombreYApellido(nombre, apellido);
     }
 }

@@ -16,19 +16,26 @@ public class UsuarioServicio {
         this.usuarioRepositorio = usuarioRepositorio;
     }
 
+    // Obtener todos los usuarios
     public List<Usuario> listarUsuarios() {
         return usuarioRepositorio.findAll();
     }
 
+    // Buscar usuario por ID con manejo seguro de Optional
     public Optional<Usuario> obtenerPorId(Integer id) {
-        return usuarioRepositorio.buscaPorId(id).or(() -> Optional.empty());//maneja los valores null
+        return usuarioRepositorio.findById(id);
     }
 
+    // Guardar usuario con validación previa
     public Usuario guardarUsuario(Usuario usuario) {
+        if (!usuarioRepositorio.findByNombre(usuario.getNombreUsuario()).isEmpty()) {
+            throw new IllegalArgumentException("El usuario ya existe.");
+        }
         return usuarioRepositorio.save(usuario);
     }
 
-    public Optional<Usuario> obtenerPorNombreUsuario(String nombreUsuario) {
-        return usuarioRepositorio.buscaPorNombreUsuario(nombreUsuario);
+    // Buscar usuario por nombre de usuario
+    public List<Usuario> obtenerPorNombreUsuario(String nombreUsuario) {
+        return usuarioRepositorio.findByNombre(nombreUsuario);
     }
 }

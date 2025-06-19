@@ -1,14 +1,14 @@
 package com.tercertiempo.sistemarugby.vista;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.Map;
 
 @RestController
 @RequestMapping("/vista/json")
 public class VistaJson<T> extends Vista<T> {
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public T leer() {
@@ -26,8 +26,27 @@ public class VistaJson<T> extends Vista<T> {
         // Implementación vacía o lógica según la definición en Vista<T>
     }
 
+    // manejo de excepciones y errores 
     @Override
     protected void mostrarError(String mensaje) {
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ERROR JSON: " + mensaje);
+        try {
+            System.out.println(objectMapper.writeValueAsString(new ErrorJson(400, mensaje)));
+        } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+            System.out.println("{\"estado\":400,\"mensaje\":\"Error al procesar JSON: " + e.getMessage() + "\"}");
+        }
     }
 }
+
+    class ErrorJson {
+        private int estado;
+        private String mensaje;
+
+        public ErrorJson(int estado, String mensaje) {
+            this.estado = estado;
+            this.mensaje = mensaje;
+        }
+
+        public int getEstado() { return estado; }
+        public String getMensaje() { return mensaje; }
+    }
+

@@ -48,8 +48,11 @@ public class ControladorUsuario {
 
     @GetMapping("/nombre/{nombreUsuario}")
     public ResponseEntity<Usuario> obtenerUsuarioPorNombre(@PathVariable String nombreUsuario) {
-        return servicioUsuario.obtenerPorNombreUsuario(nombreUsuario)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        List<Usuario> usuarios = servicioUsuario.obtenerPorNombreUsuario(nombreUsuario);
+        if (usuarios.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(usuarios.get(0));
+        }
     }
 }

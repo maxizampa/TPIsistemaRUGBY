@@ -11,34 +11,36 @@ import java.util.List;
 @RequestMapping("/equipos")
 public class ControladorEquipo {
 
-        private final EquipoServicio ServicioEquipo;
+        private final EquipoServicio EquipoServicio;
 
-    public ControladorEquipo(EquipoServicio ServicioEquipo) {
-        this.ServicioEquipo = ServicioEquipo;
+    public ControladorEquipo(EquipoServicio EquipoServicio) {
+        this.EquipoServicio = EquipoServicio;
     }
 
     @GetMapping // Listar todos los Equipos evita escribir el método en el servicio
     public List<Equipo> obtenerEquipos() {
-        return ServicioEquipo.listarEquipos();
-    }
+        return EquipoServicio.obtenerTodos();    }
 
     @PostMapping // Registrar un nuevo Equipo
     public Equipo registrarEquipo(@RequestBody Equipo Equipo) {
-        return ServicioEquipo.guardarEquipo(Equipo);
+        return EquipoServicio.guardarEquipo(Equipo);
     }
 
     @GetMapping("/{id}") // Obtener un Equipo por ID
     public ResponseEntity<Equipo> obtenerEquipoPorId(@PathVariable Integer id) {
-        return ServicioEquipo.obtenerPorId(id)
+        return EquipoServicio.obtenerPorId(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/nombre/{nombreEquipo}") // Obtener un Equipo por nombre de Equipo
     public ResponseEntity<Equipo> obtenerEquipoPorNombre(@PathVariable String nombreEquipo) {
-        return ServicioEquipo.obtenerPorNombreEquipo(nombreEquipo)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        List<Equipo> equipos = EquipoServicio.buscarPorNombre(nombreEquipo);
+        if (equipos == null || equipos.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(equipos.get(0)); // Devuelve el primer equipo encontrado
+        }
     }
 
 }

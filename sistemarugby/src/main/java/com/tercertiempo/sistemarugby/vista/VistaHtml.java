@@ -12,6 +12,13 @@ public class VistaHtml<T> extends Vista<T> {
 // Esta clase es responsable de preparar los datos para ser renderizados en una vista HTML
 // Se usa en controladores para enviar datos a la vista. Permite agregar variables que Thymeleaf puede mostrar en HTML Se comporta como un mapa (Map<String, Object>
 
+
+    private Model modelo; // Agregar el atributo Model
+
+    public void setModel(Model modelo) {
+        this.modelo = modelo;
+    }
+
     @Override
     public T leer() {
         return null; // En HTML no se obtiene entrada directa
@@ -29,13 +36,16 @@ public class VistaHtml<T> extends Vista<T> {
     }
 
     @GetMapping("/vista/html")
-    public String mostrarVista(@RequestParam(required = false) T datos, Model model) {
-        model.addAttribute("mensaje", datos != null ? datos : "Ingrese un valor");
+    public String mostrarVista(@RequestParam(required = false) T datos, Model modelo) {
+        modelo.addAttribute("mensaje", datos != null ? datos : "Ingrese un valor");
         return "vistaHtml"; // Retorna la vista Thymeleaf
     }
 
+
+
     @Override
     protected void mostrarError(String mensaje) {
+        modelo.addAttribute("error", mensaje);
         // Manejo de errores en el HTML usando atributos en el modelo
     }
 }

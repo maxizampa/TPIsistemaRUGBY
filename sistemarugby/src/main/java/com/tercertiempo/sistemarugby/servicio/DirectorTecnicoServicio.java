@@ -20,15 +20,34 @@ public class DirectorTecnicoServicio {
         return directorTecnicoRepositorio.findAll();
     }
 
-    public Optional<DirectorTecnico> obtenerPorId(int id) {
+    public Optional<DirectorTecnico> obtenerPorId(Integer id) {
         return directorTecnicoRepositorio.findById(id);
+    }
+
+    public boolean existePorId(Integer id) {
+        return directorTecnicoRepositorio.existsById(id);
+    }
+
+    public long contarDirectoresTecnicos() {
+        return directorTecnicoRepositorio.count();
     }
 
     public DirectorTecnico guardarDirectorTecnico(DirectorTecnico directorTecnico) {
         return directorTecnicoRepositorio.save(directorTecnico);
     }
 
-    public void eliminarDirectorTecnico(int id) {
-        directorTecnicoRepositorio.deleteById(id);
+    public void eliminarPorId(Integer id) {
+        if (directorTecnicoRepositorio.existsById(id)) {
+            directorTecnicoRepositorio.deleteById(id);
+        }
+    }
+
+    // Métodos personalizados para búsqueda
+    public List<DirectorTecnico> buscarPorNombre(String nombre) {
+        return directorTecnicoRepositorio.findByNombre(nombre);
+    }
+
+    public List<DirectorTecnico> buscarPorApellido(String apellido) {
+        return directorTecnicoRepositorio.findByApellido(apellido);
     }
 }

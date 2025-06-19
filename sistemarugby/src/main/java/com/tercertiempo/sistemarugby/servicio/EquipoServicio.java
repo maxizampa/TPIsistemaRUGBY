@@ -16,21 +16,39 @@ public class EquipoServicio {
         this.equipoRepositorio = equipoRepositorio;
     }
 
-    public List<Equipo> listarEquipos() {
+
+    public List<Equipo> obtenerTodos() {
         return equipoRepositorio.findAll();
     }
 
     public Optional<Equipo> obtenerPorId(Integer id) {
-        return Optional.ofNullable(equipoRepositorio.buscaPorId(id)); //para manejar los valores null
+        return equipoRepositorio.findById(id);
+    }
+
+    public boolean existePorId(Integer id) {
+        return equipoRepositorio.existsById(id);
+    }
+
+    public long contarEquipos() {
+        return equipoRepositorio.count();
     }
 
     public Equipo guardarEquipo(Equipo equipo) {
         return equipoRepositorio.save(equipo);
     }
-    public Optional<Equipo> obtenerPorNombreEquipo(String nombreEquipo) {
-        return Optional.ofNullable(equipoRepositorio.buscaPorNombre(nombreEquipo));
+
+    public void eliminarPorId(Integer id) {
+        if (equipoRepositorio.existsById(id)) {
+            equipoRepositorio.deleteById(id);
+        }
     }
-    public Optional<Equipo> obtenerPorSiglas(String siglas) {
-        return Optional.ofNullable(equipoRepositorio.buscaPorSiglas(siglas));
+
+    // Métodos personalizados para búsqueda
+    public List<Equipo> buscarPorNombre(String nombre) {
+        return equipoRepositorio.findByNombre(nombre);
+    }
+
+    public List<Equipo> buscarPorCiudad(String ciudad) {
+        return equipoRepositorio.buscarEquipoPorCiudad(ciudad);
     }
 }

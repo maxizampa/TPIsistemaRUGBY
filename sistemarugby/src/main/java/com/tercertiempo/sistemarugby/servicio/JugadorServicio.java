@@ -16,25 +16,50 @@ public class JugadorServicio {
         this.jugadorRepositorio = jugadorRepositorio;
     }
 
+    // Listar todos los jugadores
     public List<Jugador> obtenerTodos() {
         return jugadorRepositorio.findAll();
     }
 
-    public Optional<Jugador> obtenerPorId(int id) {
+    // Buscar jugador por ID con manejo de Optional
+    public Optional<Jugador> obtenerPorId(Integer id) {
         return jugadorRepositorio.findById(id);
     }
 
+    // Verificar si existe un jugador por ID
+    public boolean existePorId(Integer id) {
+        return jugadorRepositorio.existsById(id);
+    }
+
+    // Contar total de jugadores
+    public long contarJugadores() {
+        return jugadorRepositorio.count();
+    }
+
     public Jugador guardarJugador(Jugador jugador) {
-        
+        // EL JUGADOR ESTA REGISTRADO?
+        if (jugadorRepositorio.existsById(jugador.getId())) {
+            throw new IllegalArgumentException("El jugador ya está registrado.");
+        }
+
+        // EL JUGADOR TIENE EQUIPO ASIGNADO
+        if (jugador.getEquipo() != null && jugadorRepositorio.existsById(jugador.getId())) {
+            throw new IllegalArgumentException("El jugador ya pertenece a un equipo y no puede estar en otro.");
+        }
+
         return jugadorRepositorio.save(jugador);
     }
 
-    public void eliminarJugador(int id) {
-        jugadorRepositorio.deleteById(id);
+    // Eliminar jugador por ID 
+    public void eliminarPorId(Integer id) {
+        if (jugadorRepositorio.existsById(id)) {
+            jugadorRepositorio.deleteById(id);
+        }
     }
 
-    public List<Jugador> buscarPorEquipo(int equipoId) {
-        return jugadorRepositorio.buscaPorEquipoId(equipoId);
+    // Métodos personalizados para búsqueda
+    public List<Jugador> buscarPorNombre(String nombre) {
+        return jugadorRepositorio.findByNombre(nombre);
     }
-
 }
+
